@@ -5,8 +5,9 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import Button3D from "@/components/ui/Button3D";
 import { WrappedSummary } from "@/types/wrapped";
-import Carousel from "@/components/slides/Carousel";
+import Carousel from "@/components/slides/Carousel"; // Using our new Carousel
 import Stepper from "@/components/ui/Stepper";
+import { ChainLogo } from "@/components/ui/ChainLogo"; // Import for BG icons
 import { 
   WalletIcon, 
   SparklesIcon, 
@@ -39,6 +40,14 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col relative overflow-hidden font-sans">
       
+      {/* --- BACKGROUND DECORATION ICONS --- */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05] z-0">
+         <ChainLogo chain="eth" className="absolute top-20 left-10 w-32 h-32 -rotate-12" />
+         <ChainLogo chain="base" className="absolute bottom-40 right-10 w-40 h-40 rotate-12" />
+         <ChainLogo chain="polygon" className="absolute top-1/3 right-1/4 w-24 h-24 rotate-45" />
+         <ChainLogo chain="optimism" className="absolute bottom-20 left-1/4 w-28 h-28 -rotate-6" />
+      </div>
+
       {/* 1. FIXED HEADER */}
       <header className="fixed top-0 left-0 w-full flex justify-center z-50 pt-4 pb-6 bg-gradient-to-b from-[#B1E4E3] to-transparent pointer-events-none">
         <h1 className="font-logo text-2xl md:text-3xl text-center leading-[0.85] uppercase drop-shadow-md pointer-events-auto flex flex-col items-center">
@@ -52,33 +61,29 @@ export default function Home() {
       </header>
 
       {/* 2. MAIN CONTENT AREA */}
-      <div className="flex-grow flex flex-col items-center justify-center w-full px-4 pt-32 pb-12">
+      <div className="flex-grow flex flex-col items-center justify-center w-full px-4 pt-32 pb-12 z-10">
         
         {/* STEPPER */}
-        <div className="mb-10 z-10 scale-90 md:scale-100">
+        <div className="mb-10 scale-90 md:scale-100">
            <Stepper step={currentStep} />
         </div>
 
         {/* CARD */}
-        <div className="z-10 w-full max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)] p-8 md:p-12 relative flex flex-col justify-center min-h-[500px] transition-all duration-300">
+        <div className="w-full max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)] p-8 md:p-12 relative flex flex-col justify-center min-h-[550px] transition-all duration-300">
           
           {!data ? (
             /* START SCREEN */
             <div className="flex flex-col items-center text-center space-y-10 h-full justify-center">
-              
-              {/* Heading Group */}
               <div className="space-y-3">
                 <h2 className="text-3xl md:text-4xl font-logo text-slate-900 leading-tight uppercase">
                   CHECK YOUR 2025<br/>
                   <span className="text-[#B1E4E3]">ONCHAIN ACTIVITY</span>
                 </h2>
-                
                 <p className="text-slate-500 font-medium text-lg px-6 leading-relaxed">
                   Connect wallet to see your year.
                 </p>
               </div>
                
-               {/* Actions */}
                {isConnected ? (
                  <div className="w-full max-w-xs space-y-4 flex flex-col items-center">
                    <Button3D onClick={fetchWrapped} disabled={loading} variant="brand">
@@ -109,7 +114,6 @@ export default function Home() {
                      </span>
                    </Button3D>
 
-                   {/* SECURITY BADGE */}
                    <div className="flex items-center gap-2 text-slate-400">
                       <ShieldCheckIcon className="w-5 h-5 text-[#B1E4E3]" />
                       <span className="text-xs font-bold tracking-wide">Connecting your wallet is secure</span>
@@ -118,20 +122,19 @@ export default function Home() {
                )}
             </div>
           ) : (
-            /* RESULTS SCREEN */
-           <div className="h-full flex flex-col justify-between">
-  {/* Replace SlideIntro with Carousel */}
-  <Carousel data={data} />
-  
-  <div className="mt-8 flex justify-center">
-    <button 
-      onClick={() => setData(null)} 
-      className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-slate-500 uppercase tracking-widest transition-colors border-b-2 border-transparent hover:border-slate-300"
-    >
-       <ArrowPathIcon className="w-4 h-4" /> Start Over
-    </button>
-  </div>
-</div>
+            /* CAROUSEL SCREEN (New) */
+            <div className="h-full">
+              <Carousel data={data} />
+              
+              <div className="mt-4 flex justify-center">
+                <button 
+                  onClick={() => setData(null)} 
+                  className="text-[10px] font-black text-slate-200 hover:text-slate-400 uppercase tracking-widest transition-colors"
+                >
+                   RESET
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>
