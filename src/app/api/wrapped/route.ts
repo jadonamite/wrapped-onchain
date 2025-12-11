@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const apiKey = process.env.COVALENT_API_KEY;
   if (!apiKey) return NextResponse.json({ error: 'API Key missing' }, { status: 500 });
 
-  // 1. Chains to Scan (Mainnets only for V1 speed)
+  // 1. Scan the 3 major chains where we confirmed you have data
   const chains = [
     { name: "base-mainnet", id: 8453, label: "Base" },
     { name: "eth-mainnet", id: 1, label: "Ethereum" },
@@ -19,25 +19,24 @@ export async function GET(request: Request) {
   ];
 
   try {
-    // 2. Parallel Fetching (Fast!)
     const promises = chains.map(async (chain) => {
-      // fetching summary for the whole year (simplified endpoint)
-      const url = `https://api.covalenthq.com/v1/${chain.name}/address/${address}/transaction_v2/summary/?key=${apiKey}`;
+      // FIX: Corrected URL from 'transaction_v2/summary' to 'transactions_summary'
+      const url = `https://api.covalenthq.com/v1/${chain.name}/address/${address}/transactions_summary/?key=${apiKey}`;
+      
       try {
         const res = await fetch(url);
-        const data = await res.json();
-        const items = data?.data?.items || [];
-        // The summary endpoint returns a list of years/months, we sum them all for simplicity in V1
-        // or grab the latest summary item.
+        const json = await res.json();
+        const items = json.data?.items || [];
         return { chain: chain.label, items };
       } catch (err) {
+        console.error(`Failed to fetch ${chain.label}`);
         return { chain: chain.label, items: [] };
       }
     });
 
     const results = await Promise.all(promises);
 
-    // 3. Aggregation Logic
+    // 3. Aggregation
     let totalTx = 0;
     let totalGasUsd = 0;
     let topChain = { name: "None", count: 0 };
@@ -46,28 +45,33 @@ export async function GET(request: Request) {
 
     results.forEach((res) => {
       if (res.items && res.items.length > 0) {
-        // Covalent summary returns items by time range. We sum them up.
-        const chainTx = res.items.reduce((acc: number, item: any) => acc + item.total_count, 0);
-        const chainGas = res.items.reduce((acc: number, item: any) => acc + (item.total_gas_cost_usd || 0), 0);
+        // The summary endpoint returns a list (usually one item per chain summary)
+        const item = res.items[0]; 
+        
+        // Add to totals
+        const count = item.total_count || 0;
+        const gas = item.total_gas_cost_usd || 0;
+        
+        totalTx += count;
+        totalGasUsd += gas;
 
-        totalTx += chainTx;
-        totalGasUsd += chainGas;
-
-        if (chainTx > topChain.count) {
-          topChain = { name: res.chain, count: chainTx };
+        if (count > topChain.count) {
+          topChain = { name: res.chain, count: count };
         }
         
-        // Find dates
-        res.items.forEach((item: any) => {
-             const first = new Date(item.earliest_transaction.block_signed_at);
-             const last = new Date(item.latest_transaction.block_signed_at);
-             if (first < earliestTx) earliestTx = first;
-             if (last > latestTx) latestTx = last;
-        });
+        // Check Dates
+        if (item.earliest_transaction?.block_signed_at) {
+            const first = new Date(item.earliest_transaction.block_signed_at);
+            if (first < earliestTx) earliestTx = first;
+        }
+        if (item.latest_transaction?.block_signed_at) {
+            const last = new Date(item.latest_transaction.block_signed_at);
+            if (last > latestTx) latestTx = last;
+        }
       }
     });
 
-    // 4. Persona Logic (The fun part)
+    // 4. Persona Logic
     let persona = { title: "The Tourist 📸", description: "Just passing through.", color_theme: "#94a3b8" };
 
     if (totalGasUsd > 100) {
@@ -78,13 +82,12 @@ export async function GET(request: Request) {
       persona = { title: "The Regular 🤝", description: "Solid on-chain citizen.", color_theme: "#10b981" };
     }
 
-    // 5. Final JSON Response
     return NextResponse.json({
       wallet: address,
       year: 2024,
       summary: {
         total_tx: totalTx,
-        active_days: Math.floor(totalTx / 2), // Rough estimate
+        active_days: Math.floor(totalTx / 2), 
         total_gas_usd: totalGasUsd.toFixed(2),
         first_tx_date: totalTx > 0 ? earliestTx.toISOString().split('T')[0] : "N/A",
         last_tx_date: totalTx > 0 ? latestTx.toISOString().split('T')[0] : "N/A",
