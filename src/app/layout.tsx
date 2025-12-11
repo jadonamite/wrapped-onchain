@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Alfa_Slab_One } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-// 1. Configure font with variable
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-dm-sans", // Matches globals.css
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+// Load the new chunky font
+const alfaSlab = Alfa_Slab_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-alfa", // We'll use this variable in CSS
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "WrappedOnChain",
-  description: "2024 Recap",
+  title: "WrappedOnChain 2025",
+  description: "2025 Recap",
 };
 
 export default function RootLayout({
@@ -23,13 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Retro Font Link */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      {/* 2. Apply variable to body */}
-      <body className={dmSans.variable}>
+      {/* Add both font variables to body */}
+      <body className={`${dmSans.variable} ${alfaSlab.variable} antialiased min-h-screen bg-[#B1E4E3]`}>
         <Providers>{children}</Providers>
       </body>
     </html>
