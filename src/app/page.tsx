@@ -38,14 +38,12 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col relative overflow-hidden font-sans">
       
-      {/* 1. FIXED HEADER - STACKED & COMPRESSED */}
+      {/* 1. FIXED HEADER - ALFA SLAB FONT */}
       <header className="fixed top-0 left-0 w-full flex justify-center z-50 pt-4 pb-6 bg-gradient-to-b from-[#B1E4E3] to-transparent pointer-events-none">
         <h1 className="font-logo text-4xl md:text-5xl text-center leading-[0.85] uppercase drop-shadow-md pointer-events-auto flex flex-col items-center">
-          {/* Top Line: White with Black Stroke */}
           <span className="text-white text-stroke-sm tracking-wide block">
             WRAPPED
           </span>
-          {/* Bottom Line: Brand Color with Black Stroke */}
           <span className="text-[#B1E4E3] text-stroke-sm tracking-wide block">
             ONCHAIN
           </span>
@@ -69,10 +67,12 @@ export default function Home() {
               
               {/* Heading Group */}
               <div className="space-y-3">
-                <h2 className="text-4xl md:text-5xl font-logo text-slate-900 leading-[0.9] uppercase tracking-wide">
-                  CHECK YOUR<br/>
-                  <span className="text-[#B1E4E3] text-stroke-sm">2025</span>
+                {/* UPDATED TEXT & FONT */}
+                <h2 className="text-3xl md:text-4xl font-logo text-slate-900 leading-tight uppercase tracking-wide">
+                  CHECK YOUR 2025<br/>
+                  <span className="text-[#B1E4E3] text-stroke-sm">ONCHAIN ACTIVITY</span>
                 </h2>
+                
                 <p className="text-slate-500 font-medium text-lg px-6 leading-relaxed flex items-center justify-center gap-2">
                   <SparklesIcon className="w-5 h-5 text-yellow-400" />
                   Connect wallet to see your year.
