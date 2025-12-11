@@ -5,7 +5,7 @@ import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import Button3D from "@/components/ui/Button3D";
 import { WrappedSummary } from "@/types/wrapped";
-import SlideIntro from "@/components/slides/SlideIntro";
+import Carousel from "@/components/slides/Carousel";
 import Stepper from "@/components/ui/Stepper";
 import { 
   WalletIcon, 
@@ -119,17 +119,19 @@ export default function Home() {
             </div>
           ) : (
             /* RESULTS SCREEN */
-            <div className="h-full flex flex-col justify-between">
-              <SlideIntro data={data} />
-              <div className="mt-8 flex justify-center">
-                <button 
-                  onClick={() => setData(null)} 
-                  className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-slate-500 uppercase tracking-widest transition-colors border-b-2 border-transparent hover:border-slate-300"
-                >
-                   <ArrowPathIcon className="w-4 h-4" /> Start Over
-                </button>
-              </div>
-            </div>
+           <div className="h-full flex flex-col justify-between">
+  {/* Replace SlideIntro with Carousel */}
+  <Carousel data={data} />
+  
+  <div className="mt-8 flex justify-center">
+    <button 
+      onClick={() => setData(null)} 
+      className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-slate-500 uppercase tracking-widest transition-colors border-b-2 border-transparent hover:border-slate-300"
+    >
+       <ArrowPathIcon className="w-4 h-4" /> Start Over
+    </button>
+  </div>
+</div>
           )}
         </div>
       </div>
