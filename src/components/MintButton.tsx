@@ -15,7 +15,7 @@ import { WrappedSummary } from "@/types/wrapped";
 import Button3D from './ui/Button3D';
 import ChainSelectModal from './modals/ChainSelectModal'; 
 import { PERSONA_CONTRACT_ABI, CHAIN_CONFIG } from '../constants/contracts';
-import confetti from "canvas-confetti"; // For confetti
+import confetti from "canvas-confetti"; 
 
 export default function MintButton({ data }: { data: WrappedSummary }) {
   // --- UI STATE ---

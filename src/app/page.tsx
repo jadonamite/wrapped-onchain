@@ -24,16 +24,12 @@ export default function Home() {
   const { disconnect } = useDisconnect();
   
   const [loading, setLoading] = useState(false);
-  const [manualAddress, setManualAddress] = useState(""); // NEW: State for manual input
+  const [manualAddress, setManualAddress] = useState(""); 
   const [data, setData] = useState<WrappedSummary | null>(null);
 
-  // LOGIC FIX: If data exists, we are at Step 3 (regardless of connection)
-  // Else if connected, we are at Step 2. Else Step 1.
   const currentStep = data ? 3 : isConnected ? 2 : 1;
 
-  // Updated to accept an optional specific address (for manual input)
   const fetchWrapped = async (targetAddress?: string) => {
-    // Use the passed address OR the connected address
     const activeAddress = targetAddress || address;
     
     if (!activeAddress) return;
@@ -59,7 +55,8 @@ export default function Home() {
 
       {/* 2. FIXED HEADER */}
       <header className="fixed top-0 left-0 w-full flex justify-center z-50 pt-4 pb-6 bg-gradient-to-b from-[#B1E4E3] to-transparent pointer-events-none">
-        <h1 className="font-logo text-4xl md:text-5xl text-center leading-[0.85] uppercase drop-shadow-md pointer-events-auto flex flex-col items-center">
+        {/* LOGO UPDATE: text-2xl on mobile (smaller), text-5xl on desktop */}
+        <h1 className="font-logo text-2xl md:text-5xl text-center leading-[0.85] uppercase drop-shadow-md pointer-events-auto flex flex-col items-center">
           <span className="text-white text-stroke-sm tracking-wide block">
             WRAPPED
           </span>
@@ -69,9 +66,23 @@ export default function Home() {
         </h1>
       </header>
 
-      {/* SHOW WALLET STATUS ONLY IF CONNECTED AND NO DATA YET (Optional polish) */}
-      <div className="absolute top-6 right-6 z-50">
-        <WalletStatus />
+      {/* WALLET STATUS AREA */}
+      <div className="absolute top-6 right-6 z-50 pointer-events-auto">
+        
+        {/* DESKTOP: Show the full WalletStatus component */}
+        <div className="hidden md:block">
+          <WalletStatus />
+        </div>
+
+        {/* MOBILE: Show only a clickable Icon */}
+        <button
+          onClick={() => isConnected ? disconnect() : connect({ connector: injected() })}
+          className="md:hidden bg-white p-2 rounded-full border-2 border-black shadow-[2px_2px_0px_#000] active:translate-y-1 transition-all hover:bg-slate-50"
+          aria-label={isConnected ? "Disconnect Wallet" : "Connect Wallet"}
+        >
+          <WalletIcon className="w-6 h-6 text-slate-900" />
+        </button>
+
       </div>
 
       {/* 3. MAIN CONTENT */}
