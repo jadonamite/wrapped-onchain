@@ -38,9 +38,11 @@
 │   │   └── wrapped-onchain_celo.sol
 │   ├── lib
 │   │   └── utils.ts
-│   └── types
-│       └── wrapped.ts
+│   ├── types
+│   │   └── wrapped.ts
+│   └── utils
+│       └── classifier.ts
 ├── structure.md
 └── tsconfig.json
 
-15 directories, 29 files
+16 directories, 30 files

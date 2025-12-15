@@ -195,7 +195,7 @@ export async function GET(request: Request) {
     
     // Persona Logic
     if (dominance > 0.90 && cleanTotalTx > 50) {
-       if (topChainName === "Base") { title = "BASED GOD"; desc = "You live on the blue chain. Brian is proud."; theme = "from-blue-500 to-blue-700"; }
+       if (topChainName === "Base") { title = "BASED GOD"; desc = "You live on the blue chain. Jesse is proud."; theme = "from-blue-500 to-blue-700"; }
        else if (topChainName === "Ethereum") { title = "ETH MAXI"; desc = "L2s? Never heard of them."; theme = "from-slate-800 to-gray-900"; }
        else if (topChainName === "Arbitrum") { title = "ARBINAUT"; desc = "Scaling Ethereum."; theme = "from-blue-400 to-cyan-600"; }
        else if (topChainName === "Optimism") { title = "THE OPTIMIST"; desc = "Superchain believer."; theme = "from-red-500 to-rose-600"; }

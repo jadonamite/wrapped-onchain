@@ -1,11 +1,12 @@
+// src/app/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import Button3D from "@/components/ui/Button3D";
-import { WrappedSummary } from "@/types/wrapped";
-import Carousel from "@/components/slides/Carousel";
+// import Carousel from "@/components/slides/Carousel"; // REMOVED
+import WrappedCard, { WrappedData } from "@/components/WrappedCard"; // ADDED
 import Stepper from "@/components/ui/Stepper";
 import CryptoBackground from "@/components/ui/CryptoBackground";
 import { 
@@ -25,7 +26,7 @@ export default function Home() {
   
   const [loading, setLoading] = useState(false);
   const [manualAddress, setManualAddress] = useState(""); 
-  const [data, setData] = useState<WrappedSummary | null>(null);
+  const [data, setData] = useState<WrappedData | null>(null); // Updated Type
 
   const currentStep = data ? 3 : isConnected ? 2 : 1;
 
@@ -55,7 +56,6 @@ export default function Home() {
 
       {/* 2. FIXED HEADER */}
       <header className="fixed top-0 left-0 w-full flex justify-center z-50 pt-4 pb-6 bg-gradient-to-b from-[#B1E4E3] to-transparent pointer-events-none">
-        {/* LOGO UPDATE: text-2xl on mobile (smaller), text-5xl on desktop */}
         <h1 className="font-logo text-2xl md:text-5xl text-center leading-[0.85] uppercase drop-shadow-md pointer-events-auto flex flex-col items-center">
           <span className="text-white text-stroke-sm tracking-wide block">
             WRAPPED
@@ -68,13 +68,9 @@ export default function Home() {
 
       {/* WALLET STATUS AREA */}
       <div className="absolute top-6 right-6 z-50 pointer-events-auto">
-        
-        {/* DESKTOP: Show the full WalletStatus component */}
         <div className="hidden md:block">
           <WalletStatus />
         </div>
-
-        {/* MOBILE: Show only a clickable Icon */}
         <button
           onClick={() => isConnected ? disconnect() : connect({ connector: injected() })}
           className="md:hidden bg-white p-2 rounded-full border-2 border-black shadow-[2px_2px_0px_#000] active:translate-y-1 transition-all hover:bg-slate-50"
@@ -82,7 +78,6 @@ export default function Home() {
         >
           <WalletIcon className="w-6 h-6 text-slate-900" />
         </button>
-
       </div>
 
       {/* 3. MAIN CONTENT */}
@@ -93,17 +88,17 @@ export default function Home() {
            <Stepper step={currentStep} />
         </div>
 
-        {/* CARD */}
-        <div className="z-10 w-full max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)] relative overflow-hidden flex flex-col justify-center min-h-[500px] transition-all duration-300">
+        {/* CONTAINER */}
+        <div className={`z-10 w-full max-w-lg transition-all duration-500 ${!data ? 'bg-white rounded-[3rem] shadow-[var(--shadow-deep)]' : ''}`}>
           
-          <div className="absolute inset-0 magicpattern opacity-50 pointer-events-none" />
-
-          <div className="relative z-10 p-8 md:p-12 h-full flex flex-col justify-center">
+          <div className="relative z-10">
             
             {!data ? (
-              /* START SCREEN */
-              <div className="flex flex-col items-center text-center space-y-8">
-                <div className="space-y-3">
+              /* START SCREEN (White Card) */
+              <div className="p-8 md:p-12 flex flex-col justify-center items-center text-center space-y-8 min-h-[500px] relative overflow-hidden">
+                <div className="absolute inset-0 magicpattern opacity-50 pointer-events-none" />
+                
+                <div className="space-y-3 z-10">
                   <h2 className="text-3xl md:text-4xl font-logo text-slate-900 leading-tight uppercase">
                     CHECK YOUR 2025<br/>
                     <span className="text-[#B1E4E3]">ONCHAIN ACTIVITY</span>
@@ -115,7 +110,7 @@ export default function Home() {
                  
                  {isConnected ? (
                    /* CONNECTED STATE */
-                   <div className="w-full max-w-xs space-y-4 flex flex-col items-center">
+                   <div className="w-full max-w-xs space-y-4 flex flex-col items-center z-10">
                      <Button3D onClick={() => fetchWrapped()} disabled={loading} variant="brand">
                        {loading ? (
                          <span className="flex items-center gap-2 justify-center">
@@ -137,24 +132,20 @@ export default function Home() {
                      </button>
                    </div>
                  ) : (
-                   /* DISCONNECTED STATE (Manual Input Added) */
-                   <div className="w-full max-w-xs flex flex-col items-center gap-4">
-                     
-                     {/* Connect Button */}
+                   /* DISCONNECTED STATE */
+                   <div className="w-full max-w-xs flex flex-col items-center gap-4 z-10">
                      <Button3D onClick={() => connect({ connector: injected() })} variant="black">
                        <span className="flex items-center gap-2 justify-center">
                          <WalletIcon className="w-5 h-5 text-white" /> CONNECT WALLET
                        </span>
                      </Button3D>
 
-                     {/* Divider */}
                      <div className="flex items-center w-full gap-2">
                         <div className="h-px bg-slate-200 flex-1" />
                         <span className="text-[10px] font-bold text-slate-400 uppercase">OR PASTE ADDRESS</span>
                         <div className="h-px bg-slate-200 flex-1" />
                      </div>
 
-                     {/* Manual Input Group */}
                      <div className="w-full flex gap-2">
                         <input 
                           type="text" 
@@ -172,7 +163,6 @@ export default function Home() {
                         </button>
                      </div>
 
-                     {/* Secure Badge */}
                      <div className="flex items-center gap-2 text-slate-400 mt-2">
                         <ShieldCheckIcon className="w-4 h-4 text-[#B1E4E3]" />
                         <span className="text-[10px] font-bold tracking-wide uppercase">Read-Only Secure Connection</span>
@@ -181,17 +171,16 @@ export default function Home() {
                  )}
               </div>
             ) : (
-              /* RESULTS SCREEN */
-              <div className="h-full flex flex-col justify-between">
-                <Carousel data={data} />
-                <div className="mt-8 flex justify-center">
-                  <button 
-                    onClick={() => { setData(null); setManualAddress(""); }} 
-                    className="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-slate-500 uppercase tracking-widest transition-colors border-b-2 border-transparent hover:border-slate-300"
-                  >
-                     <ArrowPathIcon className="w-4 h-4" /> Start Over
-                  </button>
-                </div>
+              /* RESULTS SCREEN (Dark Holographic Card) */
+              <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-500">
+                <WrappedCard data={data} />
+                
+                <button 
+                  onClick={() => { setData(null); setManualAddress(""); }} 
+                  className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 uppercase tracking-widest transition-colors border-b-2 border-transparent hover:border-slate-900"
+                >
+                   <ArrowPathIcon className="w-4 h-4" /> Start Over
+                </button>
               </div>
             )}
           </div>
