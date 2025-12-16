@@ -28,12 +28,11 @@ export default function Home() {
   const [data, setData] = useState<WrappedData | null>(null);
   const [isRevealed, setIsRevealed] = useState(false);
   
-  // SCANNING TEXT STATE
   const [scanText, setScanText] = useState("GENERATE WRAPPED");
 
   const currentStep = data ? 3 : isConnected ? 2 : 1;
 
-  // FIX: SLOWER CYCLE (1200ms instead of 500ms)
+  // FIX: Slower Cycle (1200ms)
   const cycleScanText = () => {
     const phases = ["SCANNING ETHEREUM...", "SCANNING BASE...", "SCANNING OPTIMISM...", "SCANNING ARBITRUM...", "CALCULATING GAS...", "ANALYZING TRAITS..."];
     let i = 0;
@@ -70,6 +69,7 @@ export default function Home() {
       
       {/* 1. BACKGROUND */}
       <CryptoBackground />
+      {/* Dark Overlay for Reveal Mode */}
       <div className={`fixed inset-0 bg-slate-950 transition-opacity duration-1000 pointer-events-none z-0 ${isRevealed ? 'opacity-95' : 'opacity-0'}`} />
 
       {/* 2. HEADER */}
@@ -94,24 +94,28 @@ export default function Home() {
       {/* 3. MAIN CONTENT */}
       <div className="flex-grow flex flex-col items-center justify-center w-full px-4 pt-10 pb-12 z-10">
         
-        {/* STEPPER */}
+        {/* STEPPER (Hides on Reveal) */}
         <div className={`mb-10 scale-90 md:scale-100 transition-opacity duration-500 ${isRevealed ? 'opacity-0' : 'opacity-100'}`}>
            <Stepper step={currentStep} />
         </div>
 
-        {/* CONTAINER MORPH LOGIC - THIS FIXES THE "ENCASED" NFT */}
+        {/* CONTAINER LOGIC (The "No Container" Fix)
+           - If Input Mode: White, Shadow, Rounded.
+           - If Story Mode (Not Revealed): White, Shadow, Rounded.
+           - If REVEALED: Transparent, No Shadow, No Overflow.
+        */}
         <div className={`
           z-10 w-full transition-all duration-700 ease-in-out relative
-          ${!data ? 'max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)]' : ''}
+          ${!data ? 'max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)] min-h-[500px]' : ''}
           ${data && !isRevealed ? 'max-w-lg bg-white rounded-[3rem] shadow-[var(--shadow-deep)] min-h-[600px] overflow-hidden' : ''}
-          ${isRevealed ? 'max-w-full bg-transparent min-h-[600px] overflow-visible scale-100 shadow-none' : ''} 
+          ${isRevealed ? 'max-w-4xl bg-transparent min-h-[600px] overflow-visible' : ''} 
         `}>
           
           <div className="relative z-10 h-full">
             
             {!data ? (
               /* --- INPUT SCREEN --- */
-              <div className="p-8 md:p-12 flex flex-col justify-center items-center text-center space-y-8 min-h-[500px] relative overflow-hidden">
+              <div className="p-8 md:p-12 h-full flex flex-col justify-center items-center text-center space-y-8 relative overflow-hidden">
                 <div className="absolute inset-0 magicpattern opacity-50 pointer-events-none" />
                 
                 <div className="space-y-3 z-10">
@@ -143,16 +147,19 @@ export default function Home() {
                      </Button3D>
                      <div className="flex items-center w-full gap-2"><div className="h-px bg-slate-200 flex-1" /><span className="text-[10px] font-bold text-slate-400">OR PASTE</span><div className="h-px bg-slate-200 flex-1" /></div>
                      <div className="w-full flex gap-2">
-                        <input type="text" placeholder="0x..." value={manualAddress} onChange={(e) => setManualAddress(e.target.value)} className="flex-grow bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold" />
-                        <button onClick={() => fetchWrapped(manualAddress)} disabled={!manualAddress || loading} className="bg-slate-900 text-white rounded-xl px-4">{loading ? <ArrowPathIcon className="w-5 h-5 animate-spin"/> : <MagnifyingGlassIcon className="w-5 h-5" />}</button>
+                        <input type="text" placeholder="0x..." value={manualAddress} onChange={(e) => setManualAddress(e.target.value)} className="flex-grow bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#B1E4E3] transition-colors" />
+                        <button onClick={() => fetchWrapped(manualAddress)} disabled={!manualAddress || loading} className="bg-slate-900 text-white rounded-xl px-4 hover:bg-[#B1E4E3] hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{loading ? <ArrowPathIcon className="w-5 h-5 animate-spin"/> : <MagnifyingGlassIcon className="w-5 h-5" />}</button>
+                     </div>
+                     <div className="flex items-center gap-2 text-slate-400 mt-2">
+                        <ShieldCheckIcon className="w-4 h-4 text-[#B1E4E3]" />
+                        <span className="text-[10px] font-bold tracking-wide uppercase">Read-Only Secure Connection</span>
                      </div>
                    </div>
                  )}
               </div>
             ) : (
               /* --- STORY MODE --- */
-              <div className="h-full relative">
-                 {/* Only show paper texture if NOT revealed */}
+              <div className="h-full relative w-full">
                  {!isRevealed && <div className="absolute inset-0 magicpattern opacity-30 pointer-events-none z-0" />}
                  
                  <StoryCarousel 
