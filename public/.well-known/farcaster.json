@@ -1,27 +1,21 @@
+
 {
-  "frame": {
-    "name": "Wrapped Onchain",
-    "version": "1",
-    "iconUrl": "https://vercel.com/api/v0/deployments/dpl_8Y19VLtTErD2D94XbgeRptFvwzkb/favicon?project=wrapped-onchain&readyState=READY&teamId=team_n2SRiToGl9zeIQyL6CM5qZZw&dpl=dpl_GLfK2AHg5aPxSkv1ysTUw2pcmi9S",
-    "homeUrl": "https://wrapped-onchain.vercel.app",
-    "buttonTitle": "Wrap",
-    "splashImageUrl": "https://vercel.com/api/v0/deployments/dpl_8Y19VLtTErD2D94XbgeRptFvwzkb/favicon?project=wrapped-onchain&readyState=READY&teamId=team_n2SRiToGl9zeIQyL6CM5qZZw&dpl=dpl_GLfK2AHg5aPxSkv1ysTUw2pcmi9S",
-    "splashBackgroundColor": "#ffffff",
-    "subtitle": "Connect , Generate , Mint",
-    "description": "Check your 2025 Onchain Activity",
-    "primaryCategory": "utility",
-    "tags": [
-      "social",
-      "utility",
-      "wrapped",
-      "community",
-      "onchain"
-    ],
-    "tagline": "Check your 2025  Activity"
-  },
   "accountAssociation": {
     "header": "eyJmaWQiOjEwMjQ5NDQsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg3NjQ2NWE4MUI5QTE2OWZhOUM1RDI4OWMyOTg2MjlmMEQ1YzUyQjZCIn0",
     "payload": "eyJkb21haW4iOiJ3cmFwcGVkLW9uY2hhaW4udmVyY2VsLmFwcCJ9",
     "signature": "/o3IRgz4PWFFrmA7zQmSyN4OybDvfX1m/0fj0VY9mhNReVQfWIN9HuTEvxVDWYF4P2T/yGZBHzbVp6xGQANUIhw="
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Wrapped Onchain",
+    "iconUrl": "https://wrapped-onchain.vercel.app/icon.png",
+    "homeUrl": "https://wrapped-onchain.vercel.app",
+    "buttonTitle": "Wrap",
+    "splashImageUrl": "https://wrapped-onchain.vercel.app/splash.png",
+    "splashBackgroundColor": "#B1E4FE",
+    "subtitle": "Check your 2025 Onchain Activity",
+    "description": "Connect, Generate, and Mint your 2025 Onchain Activity Wrapped",
+    "primaryCategory": "utility",
+    "tags": ["social", "utility", "wrapped", "community", "onchain"]
   }
 }
